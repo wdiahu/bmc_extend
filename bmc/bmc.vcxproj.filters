@@ -44,5 +44,20 @@
     <ClCompile Include="uncompressTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="compressTestByNaive.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IniatializePattern.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IniatializeData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IniatializeText.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="clear.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

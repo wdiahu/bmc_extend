@@ -144,6 +144,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bmc.cpp" />
+    <ClCompile Include="clear.cpp" />
+    <ClCompile Include="compressTestByNaive.cpp" />
+    <ClCompile Include="IniatializePattern.cpp" />
+    <ClCompile Include="IniatializeData.cpp" />
+    <ClCompile Include="IniatializeText.cpp" />
     <ClCompile Include="kmp.cpp" />
     <ClCompile Include="mstring.cpp" />
     <ClCompile Include="twins.cpp" />

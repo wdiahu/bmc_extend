@@ -17,10 +17,11 @@ unsigned long g_scanned = 0;
 unsigned long g_Total = 73657183;	// 1248850022   73657183
 unsigned long g_compressed = 16290012;	// 237977515 16290012
 using namespace std;
-
 int main(int argc, char** argv)
 {
-	//uncompressTest();
+	char patFile[] = "D:\\bmc\\Alexa.com\\pat\\pat.txt";
+	//char UncompressFileDir[] = "D:\\bmc\\Alexa.com\\test";
+	//uncompressTest(UncompressFileDir,patFile,1);
 	//return 0;
 	if (argc < 3)
 		return 0;
@@ -50,80 +51,7 @@ int main(int argc, char** argv)
 		
 	}
 
-	CHAR szFindDirStr[MAX_PATH];
-	StringCchCopy(szFindDirStr, MAX_PATH, szDir);
-	StringCchCat(szFindDirStr, MAX_PATH, TEXT("\\*"));
-
-	WIN32_FIND_DATA ffd;
-	HANDLE hFind = FindFirstFile(szFindDirStr, &ffd);
-	if (INVALID_HANDLE_VALUE == hFind)
-		return 0;
-
-	char szFile[256];
-	int file_index = 0;
-	std::vector<MemBuffer> m_vecBuf;
-	do
-	{
-		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			continue;
-		else
-		{
-			unsigned long dwRead = 0;
-			char* pBuf = new char[ffd.nFileSizeLow];
-			sprintf(szFile, "%s\\%s", szDir, ffd.cFileName);
-			HANDLE hFile = CreateFile(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-			if (hFile == INVALID_HANDLE_VALUE)
-				continue;
-
-			ReadFile(hFile, pBuf, ffd.nFileSizeLow, &dwRead, NULL);
-			CloseHandle(hFile);
-
-// 			printf("%d:%s\n", file_index++, ffd.cFileName);
-			MemBuffer mb = { pBuf, ffd.nFileSizeLow / sizeof(TokenInfo) };
-			m_vecBuf.push_back(mb);
-		}
-	} while (FindNextFile(hFind, &ffd) != 0);
-	FindClose(hFind);
-
-	int count = m_vecBuf.size();//count记录文件数量
-	int* sizeArray = new int[count];//记录每个文件的大小
-	TokenInfo** infoArray = new TokenInfo * [count];//记录每个文件里的内容
-	for (int i = 0; i < count; i++)
-	{
-		sizeArray[i] = m_vecBuf[i].nSize;
-		infoArray[i] = (TokenInfo*)m_vecBuf[i].pBuffer;
-	}
-
-	vector<PatternInfo> patList;
- 	readPatten(patList);//读取模式串
-	for (int i=0;i<PAT_NUM;i++)
-	{
-		char *pat=patList[i].pat;
-		const int plen = patList[i].len;
-		make_skip(pat, plen, skipTable[i]);
-		make_shift(pat, plen, shiftTable[i]);
-		
-	}
-	clock_t tmScan = GetTickCount();
-	//模式集  模式长度集 文本信息 文本大小 待匹配文本个数  储存两个表的二维数组
- 	BMCompressedMatching(patList,infoArray, sizeArray, count, loop, skipTable, shiftTable);
-	//BMUnCompressMatching(pat, plen, infoArray, sizeArray, count, loop);
-	clock_t tmProcess = GetTickCount();
-
-	clock_t nTime = (tmProcess - tmScan);
-	printf("This is Compress: Process:%d ms, throughtput:%.2f Mbps\n", nTime, (double)g_compressed * 8 * loop / nTime / 1000);
-
-	PrintResult(loop);
-
-	// 清理工作
-	for (int i = 0; i < count; i++)
-	{
-		delete[] m_vecBuf[i].pBuffer;
-	}
-	m_vecBuf.clear();
-	delete[] sizeArray;
-	delete[] infoArray;
-
+	compressTestByNaive(szDir,patFile,1);
 	return 0;
 }
 

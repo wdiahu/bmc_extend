@@ -249,26 +249,7 @@ void BMCompressedMatching(std::vector<PatternInfo>& patList, TokenInfo** infoArr
 	delete[]array;
 }
 
-//读取模式
-void readPatten(std::vector<PatternInfo> &patList)
-{
-	 //char strPatFile[] = "D:\\bmc\\pattern\\patten.txt";//本目录下
-	char strPatFile[] = "D:\\bmc\\Alexa.com\\pat\\pat.txt";
-	FILE* pFile = fopen(strPatFile, "r");
-	if (pFile == NULL)
-	{
-		printf("could not open pattern file\n");
-		exit(0);
-	}
-	while (true)
-	{
-		PatternInfo pi = { 0 };
-		if(fscanf(pFile, "%s", pi.pat) == -1)
-			break;
-		pi.len = strlen(pi.pat);
-		patList.push_back(pi);
-	}
-}
+
 
 
 /*buf是源串 blen是源串长度 pat是模式串 plen是模式串长度 */
