@@ -19,7 +19,7 @@ unsigned long g_compressed = 16290012;	// 237977515 16290012
 using namespace std;
 int main(int argc, char** argv)
 {
-	char patFile[] = "D:\\bmc\\Alexa.com\\pat\\pat.txt";
+	char patFile[] = "D:\\bmc\\Alexa.com\\pat\\patten.txt";
 	//char UncompressFileDir[] = "D:\\bmc\\Alexa.com\\test";
 	//uncompressTest(UncompressFileDir,patFile,1);
 	//return 0;
@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 		g_Total = 73657183;
 		g_compressed = 16290012;
 		strcpy(szDir, "E:\\Document\\Alexa\\decomp-com");
-		//strcpy(szDir, "D:\\bmc\\Alexa.com\\decompress1");
+
 	}
 	else if (sets == 2)
 	{

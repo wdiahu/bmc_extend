@@ -55,7 +55,7 @@ inline int BMScanByte_bak(const char *pat, const int plen, unsigned int &b_idx, 
 	}
 }
 
-int BMScanByte(const char* pat, const int plen, unsigned int &b_idx, unsigned char token, int* skip, int* shift)
+unsigned int BMScanByte(const char* pat, const int plen, unsigned int &b_idx, unsigned char token, int* skip, int* shift)
 {
 	static short p_idx = plen;	// must be static
 	g_scanned++;
@@ -79,26 +79,13 @@ label_exit:
 	return p_idx;
 }
 
-inline short BMNaive(const char* pat, const int plen, short b_idx, short* stateArray, TokenInfo* tokenList, int dist, int length)
-{
-	int blen = b_idx + length;
-	//指向指针的参考区域
-	TokenInfo* offsetList = tokenList + b_idx - dist;
-	for (b_idx++; b_idx<= blen; )
-	{
-// 		stateArray[b_idx] = BMScanByte(pat, plen, b_idx, offsetList[(--b_idx)- dist].token);
-		stateArray[b_idx] = BMScanByte(pat, plen, b_idx, tokenList[--b_idx].token);
-	}
-	return b_idx;
-}
-
 //增加了两个参数
-inline short BMNaive(const char* pat, const int plen, unsigned int b_idx, short* stateArray, TokenInfo* tokenList, int dist, int length,int *skip,int *shift)
+inline unsigned int BMNaive(const char* pat, const int plen, unsigned int b_idx, short* stateArray, TokenInfo* tokenList, int dist, int length,int *skip,int *shift)
 {
 	int blen = b_idx + length;
-	//指向指针的参考区域
+	//指向指针的参考区域 
 	TokenInfo* offsetList = tokenList + b_idx - dist;
-	for (b_idx++; b_idx <= blen; )
+	for (b_idx++; b_idx <= blen; )//初始条件+1是为了之后的-1抵消
 	{
 		// 		stateArray[b_idx] = BMScanByte(pat, plen, b_idx, offsetList[(--b_idx)- dist].token);
 		stateArray[b_idx] = BMScanByte(pat, plen, b_idx, tokenList[--b_idx].token,skip,shift);
@@ -115,62 +102,6 @@ sizeArray文本内容大小
 count记录文件下标
 
 nLoop循环次数*/
-void BMCompressedMatching(const char* pat, const int plen, TokenInfo** infoArray, int* sizeArray, int count, int nLoop)
-{
-	short* array = new short[P_SIZE];
-
-	for (int loop = nLoop; loop > 0; loop--)
-	{
-		// for 取patterns, print pattern 需要一个二维数组来存放patten; 每次取出一个pattern生成跳跃表
-		for (int m = 0; m < count; m++)	// 取网页文件
-		{
-			TokenInfo* tokenList = infoArray[m];//文件本身内容
-			short* stateArray = array;//记录状态
-			int blen = sizeArray[m];//blen 某个文件的长度
-			short b_idx = plen;
-			while (b_idx <= blen)
-			{
-				if (tokenList[--b_idx].length == 0)	// Search Literal
-				{
-					stateArray[b_idx] = BMScanByte(pat, plen, b_idx, tokenList[b_idx].token);
-				}
-				else							// Search DistCode
-				{
-					int length = tokenList[b_idx].length;
-// 					state = MethodKMP(pat, plen, state, stateArray, tokenList, (tokenList + 1)->dist, length);
-					//tokenList+b_idx是当前指针区域
-					b_idx = BMNaive(pat, plen, b_idx, stateArray, tokenList, (tokenList + b_idx)->dist, length);
-				}
-			}
-			printf("\n");
-		}
-	}
-	delete[]array;
-}
-
-void BMCompressedMatching(char* pat, const int plen, char** infoArray, int* sizeArray, int count, int nLoop)
-{
-	short* array = new short[P_SIZE];
-
-	for (int loop = nLoop; loop > 0; loop--)
-	{
-		// for 取patterns, print pattern 需要一个二维数组来存放patten; 每次取出一个pattern生成跳跃表
-		for (int m = 0; m < count; m++)	// 取网页文件
-		{
-			char *tokenList = infoArray[m];//文件本身内容
-			short* stateArray = array;//记录状态
-			int blen = sizeArray[m];//blen 某个文件的长度
-			short b_idx = plen;
-			while (b_idx <= blen)
-			{
-			     BMScanByte(pat, plen, b_idx, tokenList[--b_idx]);
-			}
-			printf("\n");
-			
-		}
-	}
-	delete[]array;
-}
 
 
 
@@ -197,8 +128,8 @@ void UncompressedMatching(std::vector<PatternInfo>& patList, char** infoArray, i
 				//mSearch_original(tokenList, blen, pat, plen, skip, shift);
  		        while (b_idx <= blen)
  				{
- 					BMScanByte(pat, plen, b_idx, tokenList[--b_idx],skip,shift);
-				    //BMScanByte_bak(pat, plen, b_idx, tokenList[--b_idx], skip, shift);
+ 					//BMScanByte(pat, plen, b_idx, tokenList[--b_idx],skip,shift);
+				    BMScanByte(pat, plen, b_idx, tokenList[--b_idx], skip, shift);
   				}
 				printf("\n");
 			}
@@ -209,13 +140,101 @@ void UncompressedMatching(std::vector<PatternInfo>& patList, char** infoArray, i
 	delete[]array;
 }
 
+//bmc算法
+int bmc(std::vector<PatternInfo>& patList, TokenInfo** infoArray, int* sizeArray, int count, int nLoop, int skipTable[][PAT_LEN], int shiftTable[][PAT_LEN],int *state)
+{
+	
+	short* array = new short[P_SIZE];
+	for (int loop = nLoop; loop > 0; loop--)
+	{
+		// for 取patterns, print pattern 需要一个二维数组来存放patten; 每次取出一个pattern生成跳跃表
+		//指针取出shift skip
+		for (int i = 0; i < PAT_NUM; i++) {
+			int plen = patList[i].len;
+			int* skip = skipTable[i];
+			int* shift = shiftTable[i];
+			char* pat = patList[i].pat;
+			for (int m = 0; m < count; m++)	// 取网页文件  
+			{
+				TokenInfo* tokenList = infoArray[m];//文件本身内容
+				short* stateArray = array;//记录状态
+				int blen = sizeArray[m];//blen 某个文件的长度
+				short b_idx = plen;
+				while (b_idx <= blen)
+				{
+					if (tokenList[--b_idx].length == 0)	// Search Literal
+					{
+						//stateArray[b_idx] = BMScanByte(pat, plen, b_idx, tokenList[--b_idx].token, skip, shift,state);
+					}
+					else							// Search DistCode
+					{
+						/*int length = tokenList[b_idx].length;	
+					    //tokenList+b_idx是当前指针区域
+						b_idx = BMNaive(pat, plen, b_idx, stateArray, tokenList, (tokenList + b_idx)->dist, length);*/
+						
+					}
+				}
+				printf("\n");
+				
+				/*
+						1、扫描过程记录跳跃点
+						2、尾部落入pointr中后，判断比较最后一个字符得到的index值是否和referred中相等，如果不等跳转至3，否则跳转至4.
+						3、不相等，比较下一个字符，然后跳转至2，再次判断；
+						4、直接从referred向pointer中拷贝index值，
+						判断pointer中第一个位置的index是否小于等于1
+						if不是
+							继续向pointer之前扫描，直至得到不相等的字符，或者匹配到模式
+						end if
+						从referred中最后一个跳跃点寻找下一个跳跃点，对齐pattern后继续扫描pointer之后的字符串
+
+	*/
+			     
+			}
+			
+			
+		}
+
+	}
+	delete[]array;
+	return 0;
+
+}
+int BMScanByte(const char* pat, const int plen, unsigned int& b_idx, unsigned char token, int* skip, int* shift, int* state) {
+
+	static short p_idx = plen;	// must be static
+	g_scanned++;
+	if (token != pat[--p_idx])
+		goto label_exit;
+	else //相等
+	{
+		if (p_idx != 0)
+			state[b_idx] = plen;
+			return p_idx;
+		/*else
+		{
+
+			g_nMatch++;
+			printf("match,b_idx=%d\n", b_idx);
+			goto label_exit;
+		}*/
+	}
+label_exit:
+	b_idx += (shift[p_idx] > skip[token]) ? shift[p_idx] : skip[token];
+	p_idx = plen;
+	printf("%d\n", b_idx);
+	return p_idx;
+
+
+}
+/*Naive做法：如果字符本身是普通字符 则执行普通的扫描查询
+ 如果进入了指针内部 通过指针长度计算出指针结束的位置 以此位置为界
+ 继续进行比对*/
 void BMCompressedMatching(std::vector<PatternInfo>& patList, TokenInfo** infoArray, int* sizeArray, int count, int nLoop, int skipTable[][PAT_LEN], int shiftTable[][PAT_LEN])
 {
 	short* array = new short[P_SIZE];
 
 	for (int loop = nLoop; loop > 0; loop--)
 	{
-		// for 取patterns, print pattern 需要一个二维数组来存放patten; 每次取出一个pattern生成跳跃表
 		for (int i = 0; i < PAT_NUM; i++) { //取每一个模式
 			int plen = patList[i].len;
 			int* skip = skipTable[i];
@@ -236,8 +255,8 @@ void BMCompressedMatching(std::vector<PatternInfo>& patList, TokenInfo** infoArr
 					else							// Search DistCode
 					{
 						int length = tokenList[b_idx].length;
-	// 					state = MethodKMP(pat, plen, state, stateArray, tokenList, (tokenList + 1)->dist, length);
-					    //tokenList+b_idx是当前指针区域
+	// 					
+					    //tokenList+b_idx表示的是在指针的对应位置 tokenList指向文本第一个位置
 						b_idx = BMNaive(pat, plen, b_idx, stateArray, tokenList, (tokenList + b_idx)->dist, length,skip,shift);
 					}
 				}

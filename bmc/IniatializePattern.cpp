@@ -1,3 +1,5 @@
+
+#define _CRT_SECURE_NO_WARNINGS
 #include "utils.h"
 #include "mstring.h"
 #include <windows.h>
@@ -9,8 +11,6 @@ extern int shiftTable[PAT_NUM][PAT_LEN];
 //读取模式
 void readPattern(std::vector<PatternInfo>& patList,char *strPatFile)
 {
-	//char strPatFile[] = "D:\\bmc\\pattern\\patten.txt";//本目录下
-	//char strPatFile[] = "D:\\bmc\\Alexa.com\\pat\\pat.txt";
 	FILE* pFile = fopen(strPatFile, "r");
 	if (pFile == NULL)
 	{

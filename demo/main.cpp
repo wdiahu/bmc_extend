@@ -2,7 +2,34 @@
 #include <stdio.h>
 #include<string.h>
 #include <stdlib.h>
+typedef struct _MemBuffer
+{
+	char* pBuffer;
+	size_t nSize;
+}MemBuffer;
 
+typedef struct _PatternInfo
+{
+	char *pat;
+	short len;
+}PatternInfo;
+
+typedef struct _Token
+{
+	unsigned short token;
+	// 	union
+	// 	{
+	unsigned short dist;
+	unsigned short length;
+	// 	};
+}TokenInfo;
+
+typedef struct _CHAR
+{
+
+	char* plen;
+	int len;
+}CHAR;
 void test1() {
 
 	FILE* in, * out;
@@ -193,7 +220,7 @@ int main() {
 		printf("\n");
 	}*/
 
- 
+ /*
 	const char* a = "Hello";
 	const char* b = "Hell";
 	const char* c = "Her";
@@ -212,9 +239,13 @@ int main() {
 	
 		printf("%d ", f[i]);
 	}
+	*/
+
+
 
 	
 }
+
 
 
 

@@ -5,7 +5,6 @@
 #include <tchar.h>
 #include <time.h>
 using namespace std;
-
 int readText(char* szDir,bool option, vector<MemBuffer> &m_vecBuf) {
 	CHAR szFindDirStr[MAX_PATH];
 	StringCchCopy(szFindDirStr, MAX_PATH, szDir);
@@ -24,7 +23,7 @@ int readText(char* szDir,bool option, vector<MemBuffer> &m_vecBuf) {
 		{
 			unsigned long dwRead = 0;
 			char* pBuf = new char[ffd.nFileSizeLow];
-			sprintf(szFile, "%s\\%s", szDir, ffd.cFileName);
+			wsprintf(szFile, "%s\\%s", szDir, ffd.cFileName);
 			HANDLE hFile = CreateFile(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 			if (hFile == INVALID_HANDLE_VALUE)
 				continue;
@@ -32,8 +31,6 @@ int readText(char* szDir,bool option, vector<MemBuffer> &m_vecBuf) {
 			ReadFile(hFile, pBuf, ffd.nFileSizeLow, &dwRead, NULL);
 			CloseHandle(hFile);
 
-			//  			printf("%d:%s\n", file_index++, ffd.cFileName);
-						//MemBuffer mb = { pBuf, ffd.nFileSizeLow / sizeof(TokenInfo) };
 			if (option) {
 				MemBuffer mb = { pBuf, ffd.nFileSizeLow / sizeof(TokenInfo) };
 				m_vecBuf.push_back(mb);
@@ -56,7 +53,7 @@ int processText(std::vector<MemBuffer>& m_vecBuf, char** infoArray, int* sizeArr
 
 	for (int i = 0; i < count; i++) {
 		sizeArray[i] = m_vecBuf[i].nSize;
-		infoArray[i] = (char*)m_vecBuf[i].pBuffer;
+		infoArray[i] = m_vecBuf[i].pBuffer;
 	}
 	return 0;
 }

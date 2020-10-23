@@ -1,5 +1,4 @@
 #include "utils.h"
-
 int clearArray(std::vector<MemBuffer>& m_vecBuf, char**infoArray, int* sizeArray, int count) {
 	for (int i = 0; i < count; i++)
 	{
