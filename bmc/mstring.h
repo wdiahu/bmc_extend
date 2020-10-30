@@ -8,5 +8,4 @@ int mContainsSubstr(const char*, int, const char*, int);
 int mSearch_original(const char*, int, const char*, int, int*, int*);
 //สตั้
 int *make_skip(char* pat, int plen, int* skip, int **,int);
-int testBM();
 #endif  /* __MSTRING_H__ */

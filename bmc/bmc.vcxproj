@@ -108,6 +108,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <HeapReserveSize>
+      </HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -145,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="bmc.cpp" />
     <ClCompile Include="clear.cpp" />
+    <ClCompile Include="compressByKmp.cpp" />
     <ClCompile Include="compressTestByNaive.cpp" />
     <ClCompile Include="IniatializePattern.cpp" />
     <ClCompile Include="IniatializeText.cpp" />

@@ -22,7 +22,9 @@ int readText(char* szDir,bool option, vector<MemBuffer> &m_vecBuf) {
 		else
 		{
 			unsigned long dwRead = 0;
-			char* pBuf = new char[ffd.nFileSizeLow];
+ 			char* pBuf = new char[ffd.nFileSizeLow];
+			//char* pBuf = (char*)VirtualAlloc(NULL, ffd.nFileSizeLow, MEM_COMMIT|MEM_RESERVE, PAGE_READWRITE);
+			//printf("%s\n", ffd.cFileName);
 			wsprintf(szFile, "%s\\%s", szDir, ffd.cFileName);
 			HANDLE hFile = CreateFile(szFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 			if (hFile == INVALID_HANDLE_VALUE)

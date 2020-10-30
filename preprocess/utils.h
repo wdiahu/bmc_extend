@@ -28,11 +28,11 @@ typedef struct _Pointer
 typedef struct _StoredInfo
 {
 	unsigned short token;
-// 	union
-// 	{
+	union
+	{
 		unsigned short dist;
 		unsigned short length;
-// 	};
+	};
 }StoredInfo;
 
 void ScanFirst(ByteInfoList &infoList, int size, char *file);
