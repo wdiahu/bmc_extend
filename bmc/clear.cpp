@@ -8,8 +8,6 @@ int clearArray(std::vector<MemBuffer>& m_vecBuf, char**infoArray, int* sizeArray
 	m_vecBuf.clear();
 	delete[] sizeArray;
 	delete[] infoArray;
-
-	//printf("全部清空完毕");
 	return 0;
 }
 
@@ -24,6 +22,5 @@ int clearArray(std::vector<MemBuffer>& m_vecBuf, TokenInfo** infoArray, int* siz
 	delete[] sizeArray;
 	delete[] infoArray;
 
-	//printf("全部清空完毕");
 	return 0;
 }

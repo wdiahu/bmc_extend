@@ -23,16 +23,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="twins.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="kmp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="mstring.cpp">
@@ -47,16 +38,25 @@
     <ClCompile Include="compressTestByNaive.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="compressByKmp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="clear.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="IniatializePattern.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="IniatializeText.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="clear.cpp">
+    <ClCompile Include="kmp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="compressByKmp.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

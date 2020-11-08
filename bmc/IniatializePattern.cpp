@@ -1,4 +1,7 @@
-
+/****************************************************************
+ *  Purpose: read text and process text
+ *  
+ ****************************************************************/
 #define _CRT_SECURE_NO_WARNINGS
 #include "utils.h"
 #include "mstring.h"
@@ -10,7 +13,8 @@ extern int skipTable[PAT_NUM][PAT_LEN];
 extern int shiftTable[PAT_NUM][PAT_LEN];
 extern int nextTable[PAT_NUM][PAT_LEN];
 
-//读取模式
+
+
 void readPattern(std::vector<PatternInfo>& patList,char *strPatFile)
 {
 	FILE* pFile = fopen(strPatFile, "r");
@@ -27,16 +31,7 @@ void readPattern(std::vector<PatternInfo>& patList,char *strPatFile)
 		pi.len = strlen(pi.pat);
 		patList.push_back(pi);
 	}
-	/*char* find = NULL;
-	for (int i = 0; i < 1; i++) {
-
-		fgets(patList[i].pat, 120, pFile);
-		find = strchr(patList[i].pat, '\n');
-		if (find)
-			*find = '\0';
-	}*/
 }
-//处理模式(BM)
 int processPatternBm(std::vector<PatternInfo>& patList) {
 
 	for (int i = 0; i < patList.size(); i++)
@@ -49,7 +44,6 @@ int processPatternBm(std::vector<PatternInfo>& patList) {
 
 	return 0;
 }
-//处理模式(KMP)
 int processPatternKmp(std::vector<PatternInfo>& patList) {
 
 	for (int i = 0; i < patList.size(); i++)

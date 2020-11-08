@@ -4,37 +4,35 @@
 #include <iostream>
 #include <time.h>
 using namespace std;
-int num1 = 0;
 int g_next[PAT_LEN] = { 0 };
 extern unsigned long  g_nMatch;
 extern unsigned long long g_scanned;
 extern  clock_t tmScan;
 extern  clock_t tmProcess;
 extern  clock_t nTime;
+
+
+
 void GetNext(const char* pat, int* next)
 {
-	int q, k;//k记录所有前缀的对称值
-	int m = strlen(pat);//模式字符串的长度
-	next[0] = 0;//首字符的对称值肯定为0
-	for (q = 1, k = 0; q < m; ++q)//计算每一个位置的对称值
+	int q, k;//The k record the symmetric value of all prefixes
+	int m = strlen(pat);//the length of pattern
+	next[0] = 0;//the symmetric value of the first character must be 0
+	for (q = 1, k = 0; q < m; ++q)//calculate the symmetry value of each position
 	{
-		//k总是用来记录上一个前缀的最大对称值
+		//The k always record the maximum symmetric value of the previous prefix
 		while (k > 0 && pat[q] != pat[k])
-			// k = next[k - 1];//k将循环递减，值得注意的是next[k]<k总是成立
+			// k = next[k - 1];//k cyclically decreasing
 			--k;
 		if (pat[q] == pat[k])
-			k++;//增加k的唯一方法
-		next[q] = k;//获取最终值
+			k++;//add K
+		next[q] = k;//get final value
 	}
-
-	//for (int k = 0; k < m; k++)
-		//printf("%d ", next[k]);
-	//printf("\n");
 }
 
 int KMPScanByte(const char* pat, const int plen, short& p_idx, char token,int *next)
 {
- 	g_scanned++;
+
 	int ret = 0;
 	while (p_idx > 0 && pat[p_idx] != token)
 	{
@@ -46,17 +44,14 @@ int KMPScanByte(const char* pat, const int plen, short& p_idx, char token,int *n
 
 	if (p_idx == plen)
 	{
-		//printf("match\n");
-		//printf("match\n");
-		//num1++;
+	
  		g_nMatch++;
 		ret = p_idx;
-		p_idx = next[p_idx - 1];//寻找下一个匹配
+		p_idx = next[p_idx - 1];//find next match
 	}
 	return ret == 0 ? p_idx : ret;
 }
 
-//新算法
 int MethodKMP(const char* pat, const int plen, short curState,short* stateArray, TokenInfo* tokenList, int dist, int length ,int *next)
 {
 	// 	short* offState = stateArray - dist;
@@ -75,8 +70,7 @@ int MethodKMP(const char* pat, const int plen, short curState,short* stateArray,
 				{
 					stateArray[k] = offState[k + 1];
 					if (stateArray[k] == plen)
- 					{
-						//num1++;
+ 		    	    {
 						g_nMatch++;
  					}
 				}
@@ -89,7 +83,7 @@ int MethodKMP(const char* pat, const int plen, short curState,short* stateArray,
 		}
 		else
 		{
-			// g_misscan++;
+		     //g_misscan++;
 			*stateArray = KMPScanByte(pat, plen, curState, tokenList->token,next);
 		}
 	}
@@ -113,20 +107,16 @@ void KMPCompressedMatching(std::vector<PatternInfo>& patList,TokenInfo** infoArr
 
 	short* array = new short[P_SIZE];
 	int num = patList.size();
-
 	tmScan = GetTickCount64();
-	//printf("start\n");
 	for (int loop = nLoop; loop > 0; loop--)
 	{
 		for (int i = 0; i < num; i++) {
-			//printf("%d模式:\n", (i + 1));
 			num1 = 0;
 			char* pat = patList[i].pat;
 			int plen = patList[i].len;
 			int* next = nextTable[i];
 			for (int m = 0; m < count; m++)
 			{
-				//printf("第%d个文本:\n", (m + 1));
 				TokenInfo* tokenList = infoArray[m];
 				const TokenInfo* const endPtr = tokenList + sizeArray[m];
 				short* stateArray = array ;
@@ -142,19 +132,16 @@ void KMPCompressedMatching(std::vector<PatternInfo>& patList,TokenInfo** infoArr
 					else							// Search DistCode
 					{
 						int length = tokenList->length;
+						//If you want to test NewMethod and Naive.Just choose one of them 
 					    state = MethodKMP(pat, plen, state, stateArray, tokenList, (tokenList + 1)->dist, length,next);
-					   // state = KmpNaive(pat, plen, state, stateArray, tokenList, (tokenList + 1)->dist, length,next);
+					    //state = KmpNaive(pat, plen, state, stateArray, tokenList, (tokenList + 1)->dist, length,next);
 						tokenList += length;
 						stateArray += length;
 					}
 				}
 			}
 		
-			if (num1 != 0) {
-			
-				printf("%s\n",pat);
-			
-			}
+
 
 			  
 		}
@@ -162,10 +149,10 @@ void KMPCompressedMatching(std::vector<PatternInfo>& patList,TokenInfo** infoArr
 	}
 
 	tmProcess = GetTickCount64();
-	//VirtualFree(array, P_SIZE, MEM_RELEASE);
 }
 
 
+//a demo to test Kmp
 void testKMP()
 {
 		char buf[] = "HERE IS A SIMPLE EXAMPLE, JUST A EXAMPLE WITHOUT ANY OTHERS";
